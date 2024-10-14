@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spooky Encrypted Message</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Space+Mono&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Space Mono', monospace;
+            background-color: #000;
+            color: #ff6600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #halloween-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            background-color: rgba(20, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        h1, h2 {
+            font-family: 'Creepster', cursive;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #ff6600;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            background-color: #000;
+            border: 1px solid #ff6600;
+            color: #ff6600;
+            font-family: 'Space Mono', monospace;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.5rem;
+            background-color: #ff6600;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-family: 'Creepster', cursive;
+            font-size: 1.2em;
+        }
+
+        button:hover {
+            background-color: #ff8c00;
+        }
+
+        #content {
+            display: none;
+        }
+
+        .decrypt {
+            overflow: hidden;
+            white-space: nowrap;
+            animation: glitch 1s linear infinite, typing 3.5s steps(40, end);
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes glitch {
+            2%, 64% {
+                transform: translate(2px,0) skew(0deg);
+            }
+            4%, 60% {
+                transform: translate(-2px,0) skew(0deg);
+            }
+            62% {
+                transform: translate(0,0) skew(5deg); 
+            }
+        }
+
+        .decrypt:before,
+        .decrypt:after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+        }
+
+        .decrypt:before {
+            animation: glitchTop 1s linear infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+            -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+        }
+
+        @keyframes glitchTop {
+            2%, 64% {
+                transform: translate(2px,-2px);
+            }
+            4%, 60% {
+                transform: translate(-2px,2px);
+            }
+            62% {
+                transform: translate(13px,-1px) skew(-13deg); 
+            }
+        }
+
+        .decrypt:after {
+            animation: glitchBotom 1.5s linear infinite;
+            clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+            -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+        }
+
+        @keyframes glitchBotom {
+            2%, 64% {
+                transform: translate(-2px,0);
+            }
+            4%, 60% {
+                transform: translate(-2px,0);
+            }
+            62% {
+                transform: translate(-22px,5px) skew(21deg); 
+            }
+        }
+
+        #self-destruct {
+            margin-top: 2rem;
+            text-align: center;
+            font-weight: bold;
+            color: #ff0000;
+            animation: glitch 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="halloween-bg"></canvas>
+    <div class="container">
+        <div id="login">
+            <h1>SPOOKY ENCRYPTED MESSAGE</h1>
+            <input type="password" id="password" placeholder="Enter the secret spell" autocomplete="off">
+            <button onclick="decrypt()">SUMMON INVITATION</button>
+        </div>
+        <div id="content">
+            <h2>HAUNTED INVITATION</h2>
+            <p class="decrypt" data-text="You're summoned to Kiyan's Halloween party!">You're summoned to Kiyan's Halloween party!</p>
+            <p class="decrypt" data-text="Date: October 31st">Date: October 31st</p>
+            <p class="decrypt" data-text="Witching Hour: Starts at 4 PM">Witching Hour: Starts at 4 PM</p>
+            <p class="decrypt" data-text="Come and leave as you please">Come and leave as you please</p>
+            <p class="decrypt" data-text="Potions and Provisions: Drinks and food provided">Potions and Provisions: Drinks and food provided</p>
+            <p class="decrypt" data-text="Beware: Party snacks will materialize">Beware: Party snacks will materialize</p>
+            <p class="decrypt" data-text="Bring your costume and your courage!">Bring your costume and your courage!</p>
+            <div id="self-destruct"></div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('halloween-bg');
+        const ctx = canvas.getContext('2d');
+
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+
+        const characters = '🎃👻💀🦇';
+        const fontSize = 20;
+        const columns = canvas.width / fontSize;
+
+        const drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function drawHalloween() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#ff6600';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters[Math.floor(Math.random() * characters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawHalloween, 50);
+
+        function decrypt() {
+            const password = document.getElementById('password').value;
+            if (password.toLowerCase() === 'halloween') {
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                animateDecryption();
+                startSelfDestruct();
+            } else {
+                alert('Incorrect spell. The spirits deny you entry.');
+            }
+        }
+
+        function animateDecryption() {
+            const elements = document.querySelectorAll('.decrypt');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.display = 'block';
+                }, index * 1000);
+            });
+        }
+
+        function startSelfDestruct() {
+            let timeLeft = 60;
+            const selfDestructElement = document.getElementById('self-destruct');
+            
+            function updateSelfDestruct() {
+                selfDestructElement.textContent = `This spectral message will vanish in ${timeLeft} seconds`;
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    setTimeout(updateSelfDestruct, 1000);
+                } else {
+                    window.location.href = "about:blank";
+                }
+            }
+
+            setTimeout(() => {
+                selfDestructElement.style.display = 'block';
+                updateSelfDestruct();
+            }, 7000);
+        }
+    </script>
+</body>
+</html>
